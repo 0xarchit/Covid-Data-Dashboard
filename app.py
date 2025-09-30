@@ -125,7 +125,7 @@ def render_seaborn_plots(df):
     if {"WHO Region", "Confirmed"}.issubset(df.columns):
         region_summary = df.groupby("WHO Region", as_index=False)["Confirmed"].sum().sort_values("Confirmed", ascending=False)
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(data=region_summary, x="Confirmed", y="WHO Region", palette="viridis", ax=ax)
+        sns.barplot(data=region_summary, x="Confirmed", y="WHO Region", ax=ax)
         ax.set_xlabel("Confirmed Cases")
         ax.set_ylabel("WHO Region")
         st.pyplot(fig)
@@ -141,7 +141,7 @@ def render_seaborn_plots(df):
         subset = df.dropna(subset=["Case Fatality Rate", "WHO Region"])
         if not subset.empty:
             fig, ax = plt.subplots(figsize=(10, 6))
-            sns.boxplot(data=subset, x="Case Fatality Rate", y="WHO Region", palette="coolwarm", ax=ax)
+            sns.boxplot(data=subset, x="Case Fatality Rate", y="WHO Region", ax=ax)
             ax.set_xlabel("Case Fatality Rate (%)")
             ax.set_ylabel("WHO Region")
             st.pyplot(fig)
@@ -150,7 +150,7 @@ def render_seaborn_plots(df):
         status_counts = df["Vaccination Status"].value_counts().reset_index()
         status_counts.columns = ["Vaccination Status", "Count"]
         fig, ax = plt.subplots(figsize=(8, 5))
-        sns.barplot(data=status_counts, x="Vaccination Status", y="Count", palette="crest", ax=ax)
+        sns.barplot(data=status_counts, x="Vaccination Status", y="Count", ax=ax)
         ax.set_xlabel("Vaccination Status")
         ax.set_ylabel("Countries")
         st.pyplot(fig)
@@ -189,25 +189,25 @@ def render_plotly_charts(df):
     if {"Confirmed last week", "Confirmed", "Country"}.issubset(df.columns):
         line_df = df.sort_values("Confirmed last week")
         fig = px.line(line_df, x="Confirmed last week", y="Confirmed", color="Country", markers=True, title="Confirmed vs Confirmed Last Week")
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, config={"responsive": True})
     if {"Confirmed", "Deaths", "Recovered", "Country", "WHO Region"}.issubset(df.columns):
         fig = px.scatter(df, x="Confirmed", y="Deaths", size="Recovered", color="WHO Region", hover_name="Country", title="Deaths vs Confirmed with Recovery Size", size_max=40)
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, config={"responsive": True})
     if {"WHO Region", "Confirmed", "Deaths", "Recovered"}.issubset(df.columns):
         region_totals = df.groupby("WHO Region", as_index=False)[["Confirmed", "Deaths", "Recovered"]].sum()
         fig = px.treemap(region_totals, path=["WHO Region"], values="Confirmed", color="Deaths", color_continuous_scale="Reds", hover_data={"Recovered": True})
         fig.update_traces(textinfo="label+value")
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, config={"responsive": True})
     if {"Country", "New cases"}.issubset(df.columns):
         top_new = df.dropna(subset=["New cases"]).nlargest(10, "New cases")
         if not top_new.empty:
             fig = px.bar(top_new.sort_values("New cases", ascending=False), x="Country", y="New cases", color="New cases", text="New cases", title="Top Countries by New Cases", color_continuous_scale="Oranges")
             fig.update_layout(xaxis_tickangle=-45)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, config={"responsive": True})
     if {"Confirmed", "Active", "Recovered", "Deaths"}.issubset(df.columns):
         totals = df[["Confirmed", "Active", "Recovered", "Deaths"]].sum().rename_axis("Status").reset_index(name="Count")
         fig = px.funnel(totals, y="Status", x="Count", color="Status", title="Global Outcome Funnel")
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, config={"responsive": True})
 
 def render_folium_map(df):
     if "Country" not in df.columns or "Confirmed" not in df.columns:
@@ -279,7 +279,7 @@ def render_folium_map(df):
 def render_data_table(df, page_size, page_number):
     start_index = (page_number - 1) * page_size
     end_index = start_index + page_size
-    st.dataframe(df.iloc[start_index:end_index], use_container_width=True)
+    st.dataframe(df.iloc[start_index:end_index], width='stretch')
 
 def numeric_slider(df, label, column):
     if column in df.columns:
@@ -301,17 +301,17 @@ def render_insight_panels(df):
         top_cfr = df.dropna(subset=["Case Fatality Rate"]).nlargest(10, "Case Fatality Rate")
         if not top_cfr.empty:
             fig = px.bar(top_cfr.sort_values("Case Fatality Rate"), x="Case Fatality Rate", y="Country", orientation="h", title="Highest Case Fatality Rates", color="Case Fatality Rate", color_continuous_scale="Reds")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, config={"responsive": True})
     if {"Country", "Recovered / 100 Cases"}.issubset(df.columns):
         top_recovery = df.dropna(subset=["Recovered / 100 Cases"]).nlargest(10, "Recovered / 100 Cases")
         if not top_recovery.empty:
             fig = px.bar(top_recovery.sort_values("Recovered / 100 Cases"), x="Recovered / 100 Cases", y="Country", orientation="h", title="Recovered per 100 Cases Leaders", color="Recovered / 100 Cases", color_continuous_scale="Greens")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, config={"responsive": True})
     if {"Country", "1 week % increase"}.issubset(df.columns):
         fastest_growth = df.dropna(subset=["1 week % increase"]).nlargest(10, "1 week % increase")
         if not fastest_growth.empty:
             fig = px.line(fastest_growth.sort_values("1 week % increase", ascending=False), x="Country", y="1 week % increase", markers=True, title="Fastest Weekly Growth Rates")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, config={"responsive": True})
 
 def main():
     st.set_page_config(page_title="Global COVID-19 Explorer", layout="wide")
@@ -368,7 +368,7 @@ def main():
             selection = filtered_df[filtered_df["Country"].isin(top_overview)][["Country", "Confirmed", "Deaths", "Recovered", "Active"]].drop_duplicates("Country").set_index("Country")
             if not selection.empty:
                 st.subheader("Top Countries by Confirmed Cases")
-                st.dataframe(selection, use_container_width=True)
+                st.dataframe(selection, width='stretch')
     with seaborn_tab:
         st.subheader("Regional Trends and Distributions")
         render_seaborn_plots(filtered_df)
