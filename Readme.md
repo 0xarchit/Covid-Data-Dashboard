@@ -17,15 +17,17 @@ An interactive data visualization project visualizing a global COVID-19 dataset.
 
 ## Screenshots
 
-![Overview](assets/overview.png)
+> `Overview` ![Overview](assets/overview.png)
 
-![Seaborn & Matplotlib](assets/matplot-and-seaborn.png)
+> `Seaborn & Matplotlib` ![Seaborn & Matplotlib](assets/matplot-and-seaborn.png)
 
-![Plotly](assets/plotly.png)
+> `Plotly` ![Plotly](assets/plotly.png)
 
-![Folium Map](assets/folium.png)
+> `Folium` ![Folium Map](assets/folium.png)
 
-![Insight](assets/insights.png)
+> `Insight` ![Insight](assets/insights.png)
+
+> `Collab` ![Collab](assets/collab.png)
 
 ## What’s included
 
