@@ -13,7 +13,7 @@ An interactive data visualization project visualizing a global COVID-19 dataset.
 ## Quick links
 
 - Colab (interactive notebook): https://colab.research.google.com/drive/1eIEiwLE9tYK3zamSqN_xjee_nIBlVY38?usp=sharing
-- Streamlit dashboard: 
+- Streamlit dashboard: https://0xarchit-covid-dashboard.streamlit.app
 
 ## Screenshots
 
